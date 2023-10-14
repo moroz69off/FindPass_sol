@@ -13,9 +13,11 @@ namespace TaxFindPass
         private static TdClient _client;
 
         // Debug mode======================================================
-        private static int ApiId = 1962340;
-        private static string ApiHash = "658bcc68acc90d5ba4ed5ca5d7b83ed3";
-        private static string PhoneNumber = "+79525639039";
+        private static string[] secret = File.ReadAllLines(@"C:\Users\moroz69off\Documents\TaxFindPass.txt");
+
+        private static int ApiId          = Int32.Parse(secret[0]);
+        private static string ApiHash     = secret[1];
+        private static string PhoneNumber = secret[2];
         // ======================================================Debug mode
 
         private static string ApplicationVersion = "0.0.0";
@@ -152,6 +154,8 @@ namespace TaxFindPass
 
                 case TdApi.Update.UpdateConnectionState { State: TdApi.ConnectionState.ConnectionStateReady }:
                     // You may trigger additional event on connection state change
+                    //Вы можете вызвать дополнительное событие при изменении состояния соединения.
+                    ;
                     break;
 
                 default:
