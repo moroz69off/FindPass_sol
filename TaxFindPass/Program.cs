@@ -10,11 +10,10 @@ namespace TaxFindPass
 {
     internal class Program
     {
-        private static TdClient _client;
+        private static TdClient? _client;
 
         // Debug mode======================================================
         private static string[] secret = File.ReadAllLines(@"C:\Users\moroz69off\Documents\TaxFindPass.txt");
-
         private static int ApiId          = Int32.Parse(secret[0]);
         private static string ApiHash     = secret[1];
         private static string PhoneNumber = secret[2];
@@ -44,6 +43,7 @@ namespace TaxFindPass
             }
 
             // Querying info about current user and some channels
+            // Запрос информации о текущем пользователе
             TdApi.User currentUser = await GetCurrentUser();
 
             string fullUserName = $"{currentUser.FirstName} {currentUser.LastName}".Trim();
@@ -85,19 +85,13 @@ namespace TaxFindPass
         private static async Task HandleAuthentication()
         {
             // Setting phone number
-            await _client.ExecuteAsync(new TdApi.SetAuthenticationPhoneNumber
-            {
-                PhoneNumber = PhoneNumber
-            });
+            await _client.ExecuteAsync(new TdApi.SetAuthenticationPhoneNumber { PhoneNumber = PhoneNumber });
 
             // Telegram servers will send code to us
             Console.Write("Insert the login code: ");
             var code = Console.ReadLine();
 
-            await _client.ExecuteAsync(new TdApi.CheckAuthenticationCode
-            {
-                Code = code
-            });
+            await _client.ExecuteAsync(new TdApi.CheckAuthenticationCode { Code = code });
 
             if (!_passwordNeeded) { return; }
 
@@ -105,17 +99,17 @@ namespace TaxFindPass
             Console.Write("Insert the password: ");
             var password = Console.ReadLine();
 
-            await _client.ExecuteAsync(new TdApi.CheckAuthenticationPassword
-            {
-                Password = password
-            });
+            await _client.ExecuteAsync(new TdApi.CheckAuthenticationPassword { Password = password });
         }
 
         private static async Task ProcessUpdates(TdApi.Update update)
         {
             // Since Tdlib was made to be used in GUI application we need to struggle a bit and catch required events to determine our state.
+            // Поскольку Tdlib был создан для использования в приложении с графическим интерфейсом, нам нужно немного потрудиться и перехватить необходимые события для определения нашего состояния.
             // Below you can find example of simple authentication handling.
+            // Ниже вы можете найти пример простой обработки аутентификации.
             // Please note that AuthorizationStateWaitOtherDeviceConfirmation is not implemented.
+            // Обратите внимание, что AuthorizationStateWaitOtherDeviceConfirmation не реализован.
 
             switch (update)
             {
@@ -155,7 +149,7 @@ namespace TaxFindPass
                 case TdApi.Update.UpdateConnectionState { State: TdApi.ConnectionState.ConnectionStateReady }:
                     // You may trigger additional event on connection state change
                     //Вы можете вызвать дополнительное событие при изменении состояния соединения.
-                    ;
+                    Console.WriteLine("Изменениe состояния соединения");
                     break;
 
                 default:
